@@ -150,6 +150,36 @@ const wchar_t* getFolderCompacting(MediaTrack* track) {
 	return L""; // Should never happen.
 }
 
+/*** A control surface to obtain certain info that can only be retrieved that way.
+ */
+class Surface : IReaperControlSurface {
+	public:
+	const char* GetTypeString() {
+		return "OSARA";
+	}
+	const char* GetDescString() {
+		return "OSARA";
+	}
+	const char* GetConfigString() {
+		return "";
+	}
+
+	// GetSetMediaTrackInfo D_VOL only gets volume trim, not automated volume.
+	double volume;
+	void SetSurfaceVolume(MediaTrack* track, double value) {
+		if (track == currentTrack)
+			volume = value;
+	}
+	// Ditto for pan.
+	double pan;
+	void SetSurfacePan(MediaTrack* track, double value) {
+		if (track == currentTrack)
+			pan = value;
+	}
+};
+
+Surface* surface = NULL;
+
 /*** Code to execute after existing actions.
  * This is used to report messages regarding the effect of the command, etc.
  */
@@ -323,12 +353,11 @@ void postSelectEnvelope(int command) {
 }
 
 void postChangeTrackVolume(int command) {
-	MediaTrack* track = GetLastTouchedTrack();
-	if (!track)
+	if (!currentTrack)
 		return;
 	wostringstream s;
 	s << fixed << setprecision(1);
-	s << VAL2DB(*(double*)GetSetMediaTrackInfo(track, "D_VOL", NULL));
+	s << VAL2DB(surface->volume);
 	outputMessage(s);
 }
 
@@ -340,17 +369,15 @@ void postChangeHorizontalZoom(int command) {
 }
 
 void postChangeTrackPan(int command) {
-	MediaTrack* track = GetLastTouchedTrack();
-	if (!track)
+	if (!currentTrack)
 		return;
-	double pan = *(double*)GetSetMediaTrackInfo(track, "D_PAN", NULL) * 100;
 	wostringstream s;
-	if (pan == 0)
+	if (surface->pan == 0)
 		s << L"center";
-	else if (pan < 0)
-		s << -pan << L"% left";
+	else if (surface->pan < 0)
+		s << -surface->pan << L"% left";
 	else
-		s << pan << L"% right";
+		s << surface->pan << L"% right";
 	outputMessage(s);
 }
 
@@ -1023,11 +1050,14 @@ REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_HINSTANCE hI
 		rec->Register("hookcommand2", handleCommand);
 
 		rec->Register("accelerator", &accelReg);
+		surface = new Surface;
+		rec->Register("csurf_inst", (void*)surface);
 		SetTimer(NULL, NULL, 0, delayedInit);
 		return 1;
 
 	} else {
 		// Unload.
+		delete surface;
 		accPropServices->Release();
 		return 0;
 	}
