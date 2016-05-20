@@ -2,7 +2,7 @@
  * OSARA: Open Source Accessibility for the REAPER Application
  * Resource script
  * Author: James Teh <jamie@nvaccess.org>
- * Copyright 2015 NV Access Limited
+ * Copyright 2015-2016 NV Access Limited
  * License: GNU General Public License version 2.0
  */
 
@@ -15,7 +15,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // todo: Fix positioning.
 ID_PARAMS_DLG DIALOGEX 0, 0, 500, 500
 	CAPTION "Parameters"
-{
+BEGIN
 	LTEXT "Parameter:", IDC_STATIC, 10, 10, 10, 10
 	COMBOBOX ID_PARAM, 20, 10, 10, 10, CBS_DROPDOWNLIST | WS_TABSTOP
 	LTEXT "Value:", IDC_STATIC, 10, 20, 10, 10
@@ -24,12 +24,12 @@ ID_PARAMS_DLG DIALOGEX 0, 0, 500, 500
 	DEFPUSHBUTTON "Close", IDCANCEL, 10, 30, 10, 10
 	LTEXT "Filter:", IDC_STATIC, 10, 40, 10, 10
 	EDITTEXT ID_PARAM_FILTER, 20, 40, 40, 10
-}
+END
 
 // todo: Fix positioning.
 ID_PEAK_WATCHER_DLG DIALOGEX 0, 0, 500, 500
 	CAPTION "Peak Watcher"
-{
+BEGIN
 	LTEXT "First track:", IDC_STATIC, 10, 10, 10, 10
 	COMBOBOX ID_PEAK_TRACK1, 20, 10, 10, 10, CBS_DROPDOWNLIST | WS_TABSTOP
 	LTEXT "Second track:", IDC_STATIC, 10, 20, 10, 10
@@ -47,15 +47,15 @@ ID_PEAK_WATCHER_DLG DIALOGEX 0, 0, 500, 500
 	PUSHBUTTON "&Reset", ID_PEAK_RESET, 10, 80, 10, 10
 	DEFPUSHBUTTON "OK", IDOK, 20, 80, 10, 10
 	PUSHBUTTON "Cancel", IDCANCEL, 30, 80, 10, 10
-}
+END
 
 // todo: Fix positioning.
 ID_CONFIG_DLG DIALOGEX 0, 0, 500, 500
 	CAPTION "OSARA Configuration"
-{
+BEGIN
 	AUTOCHECKBOX "Report position when &scrubbing", ID_CONFIG_REPORT_SCRUB, 10, 10, 10, 10
 	AUTOCHECKBOX "Report &FX when moving to tracks/takes", ID_CONFIG_REPORT_FX, 10, 20, 10, 10
 	AUTOCHECKBOX "Report transport state (play, record, etc.)", ID_CONFIG_REPORT_TRANSPORT, 10, 30, 10, 10
 	DEFPUSHBUTTON "OK", IDOK, 10, 70, 10, 10
 	PUSHBUTTON "Cancel", IDCANCEL, 20, 70, 10, 10
-}
+END
